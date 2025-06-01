@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@drawable/gradient_backround3"
+    tools:context=".ui.fragments.info.InfoImmatureFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Add this at the top of your ConstraintLayout, just before the title TextView -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="Katarak Immature"
+            app:navigationIcon="@drawable/ic_back" />
+
+        <!-- Then update the tvTitle constraints to be below the toolbar -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <ImageView
+            android:id="@+id/ivInfoImage"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="12dp"
+            android:contentDescription="Katarak Immature"
+            android:scaleType="centerCrop"
+            android:src="@drawable/splash_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+        <TextView
+            android:id="@+id/tvContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppinsregular"
+            android:lineSpacingExtra="6dp"
+            android:text="Katarak immature atau katarak belum matang adalah tahap awal katarak di mana lensa mata mulai keruh tetapi belum sepenuhnya menghalangi cahaya. Pada tahap ini, gangguan penglihatan mungkin tidak terlalu parah dan dapat ditoleransi dengan penggunaan kacamata atau alat bantu visual lainnya.\n\nCiri-ciri katarak immature:\n• Kekeruhan parsial pada lensa mata\n• Masih ada bagian lensa yang jernih\n• Penglihatan masih cukup baik untuk melakukan aktivitas sehari-hari\n\nGejala katarak immature bisa berupa:\n• Penglihatan kabur ringan\n• Sedikit kesulitan melihat di malam hari\n• Sensitivitas terhadap cahaya meningkat\n• Perubahan kecil dalam persepsi warna\n• Mungkin melihat halo di sekitar lampu\n\nPada tahap ini, dokter mungkin merekomendasikan pemantauan rutin dan perubahan pada resep kacamata sebelum mempertimbangkan operasi. Beberapa pasien mungkin tidak memerlukan intervensi segera jika katarak belum signifikan mengganggu kualitas hidup mereka.\n\nTindakan preventif seperti penggunaan kacamata hitam untuk melindungi dari sinar UV, berhenti merokok, dan kontrol gula darah yang baik (jika diabetes) juga direkomendasikan untuk memperlambat perkembangan katarak immature."
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivInfoImage" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

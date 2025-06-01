@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Declare camera feature -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" /> <!-- Add permissions -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/splash_icon"
+        android:label="CataractApp"
+        android:largeHeap="true"
+        android:roundIcon="@drawable/splash_icon"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.CataractScan"
+        tools:targetApi="31">
+        <activity
+            android:name=".login.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".login.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.ResultActivity"
+            android:exported="false" /> <!-- Set to true if you want to access from outside -->
+        <activity
+            android:name=".profile.EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".splashscreen.SplashScreenActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".login.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".register.RegisterActivity"
+            android:exported="false" /> <!-- Provider for handling images -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>

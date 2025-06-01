@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.cataractscan.ui.fragments.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.cataractscan.ui.fragments.HistoryFragment"
+        android:label="History"
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/analyzeFragment"
+        android:name="com.example.cataractscan.ui.fragments.AnalyzeFragment"
+        android:label="Analyze"
+        tools:layout="@layout/fragment_analyze" />
+
+    <fragment
+        android:id="@+id/aboutUsFragment"
+        android:name="com.example.cataractscan.ui.fragments.AboutUsFragment"
+        android:label="About Us"
+        tools:layout="@layout/fragment_about_us" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.cataractscan.ui.fragments.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <!-- Add these inside your nav_graph.xml -->
+    <fragment
+        android:id="@+id/infoPengertianFragment"
+        android:name="com.example.cataractscan.ui.fragments.info.InfoPengertianFragment"
+        android:label="Pengertian Katarak"
+        tools:layout="@layout/fragment_info_pengertian" />
+
+    <fragment
+        android:id="@+id/infoMatureFragment"
+        android:name="com.example.cataractscan.ui.fragments.info.InfoMatureFragment"
+        android:label="Katarak Mature"
+        tools:layout="@layout/fragment_info_mature" />
+
+    <fragment
+        android:id="@+id/infoImmatureFragment"
+        android:name="com.example.cataractscan.ui.fragments.info.InfoImmatureFragment"
+        android:label="Katarak Immature"
+        tools:layout="@layout/fragment_info_immature" />
+</navigation>

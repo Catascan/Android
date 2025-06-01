@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_backround3"
+    android:fillViewport="true"
+    tools:context=".ui.fragments.info.InfoMatureFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Add this at the top of your ConstraintLayout, just before the title TextView -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="Katarak Mature"
+            app:navigationIcon="@drawable/ic_back" />
+
+        <!-- Then update the tvTitle constraints to be below the toolbar -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <ImageView
+            android:id="@+id/ivInfoImage"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="Katarak Mature"
+            android:scaleType="centerCrop"
+            android:src="@drawable/splash_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+        <TextView
+            android:id="@+id/tvContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppinsregular"
+            android:lineSpacingExtra="6dp"
+            android:text="Katarak mature atau katarak matang adalah tahap katarak yang sudah sangat berkembang. Pada tahap ini, lensa mata sudah sangat keruh dan memblokir hampir semua cahaya yang masuk ke mata, menyebabkan gangguan penglihatan yang signifikan.\n\nCiri-ciri katarak mature:\n• Lensa mata berwarna putih susu atau kekuningan\n• Kekeruhan hampir menutupi seluruh lensa mata\n• Penglihatan sangat terganggu, bisa hingga hanya mampu membedakan terang dan gelap\n• Pupil mata mungkin terlihat putih\n\nGejala katarak mature termasuk:\n• Penglihatan yang sangat kabur\n• Kesulitan membedakan warna\n• Kemungkinan melihat bayangan hitam\n• Sangat sensitif terhadap cahaya\n• Kesulitan melakukan aktivitas sehari-hari yang memerlukan penglihatan baik\n\nPada tahap ini, tindakan operasi biasanya direkomendasikan untuk mengembalikan penglihatan. Operasi katarak pada tahap mature biasanya memiliki tingkat keberhasilan yang tinggi dalam memperbaiki penglihatan pasien."
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivInfoImage" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

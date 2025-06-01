@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="shadow_size">4dp</dimen>
+</resources>

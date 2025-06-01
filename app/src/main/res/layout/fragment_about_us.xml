@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_backround3"
+    tools:context=".ui.fragments.AboutUsFragment">
+
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/back_button"
+        android:src="@drawable/ic_back" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:contentDescription="@string/profile_image"
+                android:src="@drawable/splash_icon"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="SISTEM DETEKSI KATARAK MENGGUNAKAN DEEP LEARNING"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_role"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Telkom University 2025"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_app_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="CataScan adalah aplikasi berbasis kecerdasan buatan (AI) yang dirancang untuk membantu mendeteksi katarak secara otomatis melalui analisis gambar mata. Aplikasi ini memanfaatkan model machine learning (CNN) untuk mengklasifikasikan kondisi lensa mata ke dalam tiga kategori: normal, immature cataract, dan mature cataract."
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:fontFamily="@font/poppinsregular" />
+
+            <TextView
+                android:id="@+id/tv_fungsi_utama_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Fungsi Utama Aplikasi:"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:fontFamily="@font/poppinsmedium" />
+
+            <TextView
+                android:id="@+id/tv_app_functions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="1. Deteksi Otomatis Katarak\nMenganalisis foto mata pengguna dan mengidentifikasi apakah terdapat gejala katarak serta tingkat keparahannya (immature atau mature).\n\n2. Prediksi Berbasis Model CNN\nMenggunakan model deep learning (Convolutional Neural Network) yang telah dilatih untuk mengenali pola katarak pada citra mata.\n\n3. Penjelasan Hasil Diagnostik\nMemberikan informasi deskriptif terkait hasil deteksi, misalnya: Kekeruhan sebagian pada lensa (immature cataract)\n\n4. Penyimpanan Riwayat Deteksi\nMenyimpan data hasil analisis untuk pelacakan dan konsultasi lanjutan.\n\n5. Akses Melalui Aplikasi Mobile\nPengguna dapat mengambil foto langsung atau mengunggah gambar mata melalui aplikasi Android yang terhubung ke backend server AI."
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:fontFamily="@font/poppinsregular" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Pembimbing 1 :"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <ImageView
+                    android:id="@+id/iv_pembimbing1_photo"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/img"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/rounded_image_background"
+                    android:contentDescription="Foto Sofia Saidah" />
+
+                <TextView
+                    android:id="@+id/tv_pembimbing1_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Sofia Saidah, S.T.,M.T."
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppinsregular" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Pembimbing 2 :"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <ImageView
+                    android:id="@+id/iv_pembimbing2_photo"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/img"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/rounded_image_background"
+                    android:contentDescription="Foto Ir.Rita Magdalena" />
+
+                <TextView
+                    android:id="@+id/tv_pembimbing2_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Ir.Rita Magdalena, M.T"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppinsregular" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Disusun Oleh :"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="4dp">
+
+                    <ImageView
+                        android:id="@+id/iv_niswah_photo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/img"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/rounded_image_background"
+                        android:contentDescription="Foto Niswah Banun Tsaniya" />
+
+                    <TextView
+                        android:id="@+id/tv_niswah_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="Niswah Banun Tsaniya / 1101210078"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppinsregular" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp">
+
+                    <ImageView
+                        android:id="@+id/iv_arga_photo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/arga"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/rounded_image_background"
+                        android:contentDescription="Foto Arga Fajar Hilmi" />
+
+                    <TextView
+                        android:id="@+id/tv_arga_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="Arga Fajar Hilmi / 1101213046"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppinsregular" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="24dp">
+
+                    <ImageView
+                        android:id="@+id/iv_nabil_photo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/nabil"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/rounded_image_background"
+                        android:contentDescription="Foto Muhammad Nabil Rafa Azakiy" />
+
+                    <TextView
+                        android:id="@+id/tv_nabil_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="Muhammad Nabil Rafa Azakiy / 1101210393"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppinsregular" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

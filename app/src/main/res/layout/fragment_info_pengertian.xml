@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@drawable/gradient_backround3"
+    tools:context=".ui.fragments.info.InfoPengertianFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Add this at the top of your ConstraintLayout, just before the title TextView -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="Info Pengertian"
+            app:navigationIcon="@drawable/ic_back" />
+
+        <!-- Then update the tvTitle constraints to be below the toolbar -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <ImageView
+            android:id="@+id/ivInfoImage"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="Katarak"
+            android:scaleType="centerCrop"
+            android:src="@drawable/splash_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+        <TextView
+            android:id="@+id/tvContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppinsregular"
+            android:lineSpacingExtra="6dp"
+            android:text="Katarak adalah kondisi ketika lensa mata menjadi keruh dan menghambat cahaya masuk ke mata, yang menyebabkan gangguan penglihatan. Katarak biasanya berkembang perlahan dan dapat mempengaruhi satu atau kedua mata.\n\nKondisi ini paling umum terjadi pada orang lanjut usia, tetapi juga bisa terjadi pada usia berapa pun karena cedera, paparan sinar matahari yang berlebihan, atau kondisi medis tertentu seperti diabetes.\n\nGejala katarak meliputi:\n• Pandangan kabur atau buram\n• Kesulitan melihat pada malam hari\n• Sensitivitas terhadap cahaya dan silau\n• Melihat halo di sekitar lampu\n• Penglihatan ganda pada satu mata\n• Perubahan persepsi warna\n• Kebutuhan akan perubahan resep kacamata yang lebih sering\n\nPengobatan katarak biasanya dilakukan melalui operasi, di mana lensa yang keruh diganti dengan lensa buatan. Prosedur ini umumnya aman dan efektif dalam mengembalikan penglihatan."
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivInfoImage" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

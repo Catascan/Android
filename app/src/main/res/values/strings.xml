@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cataract Scan</string>
+
+    <string name="daftar">Daftar Disini!!!</string>
+    <string name="sudah_punya">Sudah Punya akun?</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="btnregister">Register</string>
+    <string name="belum_punya">Belum Punya Akun? Silahkan</string>
+    <string name="login">Silahkan Login</string>
+    <string name="message_dont_have_an_account">Don\'t have an account ?</string>
+    <string name="signup">Sign Up</string>
+    <string name="image_classifier_failed">image classifier failed</string>
+    <string name="result">Hasil Analisis</string>
+    <string name="gallery">Galeri</string>
+    <string name="analyze">Analisis</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="pengertian_katarak_content">Katarak adalah kondisi ketika lensa mata menjadi keruh dan menghambat cahaya masuk ke mata, yang menyebabkan gangguan penglihatan. Katarak biasanya berkembang perlahan dan dapat mempengaruhi satu atau kedua mata. Kondisi ini paling umum terjadi pada orang lanjut usia, tetapi juga bisa terjadi pada usia berapa pun.\n\nGejala katarak meliputi pandangan kabur, kesulitan melihat pada malam hari, sensitivitas terhadap cahaya, melihat halo di sekitar lampu, penglihatan ganda, dan perubahan persepsi warna.</string>
+    <string name="katarak_mature_content">Katarak mature atau katarak matang adalah tahap katarak yang sudah sangat berkembang. Pada tahap ini, lensa mata sudah sangat keruh dan memblokir hampir semua cahaya yang masuk ke mata, menyebabkan gangguan penglihatan yang signifikan.\n\nGejala katarak mature termasuk penglihatan yang sangat kabur, kesulitan membedakan warna, dan kemungkinan melihat bayangan hitam. Pada tahap ini, tindakan operasi biasanya direkomendasikan untuk mengembalikan penglihatan.</string>
+    <string name="katarak_immature_content">Katarak immature atau katarak belum matang adalah tahap awal katarak di mana lensa mata mulai keruh tetapi belum sepenuhnya menghalangi cahaya. Pada tahap ini, gangguan penglihatan mungkin tidak terlalu parah dan dapat ditoleransi dengan penggunaan kacamata atau alat bantu visual lainnya.\n\nGejala katarak immature bisa berupa penglihatan kabur ringan, sedikit kesulitan melihat di malam hari, atau perubahan kecil dalam persepsi warna. Pada tahap ini, dokter mungkin merekomendasikan pemantauan rutin dan perubahan pada resep kacamata sebelum mempertimbangkan operasi.</string>
+    <string name="profile_image">\n</string>
+    <string name="back_button" />
+
+</resources>

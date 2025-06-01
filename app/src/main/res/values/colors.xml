@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="hijaumuda">#CADBB7</color>
+    <color name="statusNormal">#CADBB7</color>
+    <color name="statusMild">#CADBB7</color>
+    <color name="statusSevere">#DC143C	</color>
+    <color name="hijau">#98A985</color>
+    <color name="hijautua">#485935</color>
+    <color name="birutua">#2C8D98</color>
+    <color name="birumuda">#4B9FA1</color>
+    <color name="gray">#757575</color>
+    <color name="teal_700">#757575</color>
+
+
+
+</resources>

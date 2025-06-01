@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_backround3"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.activities.ResultActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="0dp"
+            app:navigationIcon="@drawable/ic_back"
+            app:title="Hasil Analisis"
+            app:titleCentered="true"
+             />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="24dp">
+
+            <!-- Image Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardImage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/ivEyeImage"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="Eye Image"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintDimensionRatio="4:3"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@tools:sample/backgrounds/scenic" />
+
+                    <TextView
+                        android:id="@+id/tvImageLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:fontFamily="@font/poppinsmedium"
+                        android:paddingStart="12dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="6dp"
+                        android:text="Analyzed Image"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Results Layout -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/resultLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@id/cardImage"
+                app:layout_constraintStart_toStartOf="@id/cardImage"
+                app:layout_constraintTop_toBottomOf="@id/cardImage"
+                tools:visibility="visible">
+
+                <!-- Diagnosis Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardDiagnosis"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <View
+                            android:id="@+id/severityIndicator"
+                            android:layout_width="4dp"
+                            android:layout_height="0dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvDiagnosisLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:text="Diagnosis"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toEndOf="@id/severityIndicator"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvDiagnosis"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="4dp"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/poppinsregular"
+                            app:layout_constraintStart_toEndOf="@id/severityIndicator"
+                            app:layout_constraintTop_toBottomOf="@id/tvDiagnosisLabel"
+                            tools:text="Moderate Katarak" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Confidence Scores Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardConfidence"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cardDiagnosis">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/ivConfidence"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_confidence"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/hijautua" />
+
+                        <TextView
+                            android:id="@+id/tvConfidenceLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:text="Nilai Akhir"
+                            android:textColor="@color/hijautua"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@id/ivConfidence"
+                            app:layout_constraintTop_toTopOf="@id/ivConfidence" />
+
+                        <!-- Normal Score -->
+                        <TextView
+                            android:id="@+id/tvNormalLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:text="Normal"
+                            android:textColor="@color/hijautua"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvConfidenceLabel" />
+
+                        <TextView
+                            android:id="@+id/tvNormalPercent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:textColor="@color/hijau"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/tvNormalLabel"
+                            tools:text="76%" />
+
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
+                            android:id="@+id/progressNormal"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:progress="76"
+                            app:indicatorColor="@color/hijau"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvNormalLabel"
+                            app:trackCornerRadius="4dp"
+                            app:trackThickness="8dp" />
+
+                        <!-- Immature Score -->
+                        <TextView
+                            android:id="@+id/tvImmatureLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:text="Immature"
+                            android:textColor="@color/hijautua"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/progressNormal" />
+
+                        <TextView
+                            android:id="@+id/tvImmaturePercent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:textColor="@color/hijautua"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/tvImmatureLabel"
+                            tools:text="15%" />
+
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
+                            android:id="@+id/progressImmature"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:progress="15"
+                            app:indicatorColor="@color/hijautua"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvImmatureLabel"
+                            app:trackCornerRadius="4dp"
+                            app:trackThickness="8dp" />
+
+                        <!-- Mature Score -->
+                        <TextView
+                            android:id="@+id/tvMatureLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:text="Mature"
+                            android:textColor="@color/hijautua"
+                            android:textSize="14sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/progressImmature" />
+
+                        <TextView
+                            android:id="@+id/tvMaturePercent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:textColor="@color/statusSevere"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/tvMatureLabel"
+                            tools:text="9%" />
+
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
+                            android:id="@+id/progressMature"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:progress="9"
+                            app:indicatorColor="@color/statusSevere"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvMatureLabel"
+                            app:trackCornerRadius="4dp"
+                            app:trackThickness="8dp" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Explanation Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardExplanation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cardConfidence">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/ivExplanation"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/birutua" />
+
+                        <TextView
+                            android:id="@+id/tvExplanationLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:text="Penjelasan"
+                            android:textColor="@color/birutua"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@id/ivExplanation"
+                            app:layout_constraintTop_toTopOf="@id/ivExplanation" />
+
+                        <TextView
+                            android:id="@+id/tvExplanation"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:lineSpacingExtra="4dp"
+                            android:textSize="16sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvExplanationLabel"
+                            tools:text="Tidak ditemukan indikasi katarak." />
+
+                        <TextView
+                            android:id="@+id/tvDisclaimer"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:fontFamily="@font/poppinsmedium"
+                            android:text="*Analisis ini hanya untuk tujuan informasi dan tidak boleh menggantikan nasihat medis profesional."
+                            android:textSize="12sp"
+                            android:textStyle="italic"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvExplanation" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Action Buttons Card -->
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:id="@+id/cardActions"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    app:cardCornerRadius="16dp"-->
+<!--                    app:cardElevation="4dp"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/cardExplanation">-->
+
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="vertical"-->
+<!--                        android:padding="16dp">-->
+
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:fontFamily="@font/poppinsmedium"-->
+<!--                            android:text="Actions"-->
+<!--                            android:textSize="18sp"-->
+<!--                            android:textStyle="bold" />-->
+
+<!--                        <com.google.android.material.button.MaterialButton-->
+<!--                            android:id="@+id/btnShare"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="16dp"-->
+<!--                            android:paddingTop="12dp"-->
+<!--                            android:paddingBottom="12dp"-->
+<!--                            android:text="Share Results"-->
+<!--                            app:cornerRadius="12dp"-->
+<!--                            app:iconGravity="textStart" />-->
+
+<!--                        <com.google.android.material.button.MaterialButton-->
+<!--                            android:id="@+id/btnSeeHistory"-->
+<!--                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="8dp"-->
+<!--                            android:paddingTop="12dp"-->
+<!--                            android:paddingBottom="12dp"-->
+<!--                            android:text="See All History"-->
+<!--                            android:textColor="@color/birutua"-->
+<!--                            app:cornerRadius="12dp"-->
+<!--                            app:icon="@drawable/ic_history"-->
+<!--                            app:iconGravity="textStart"-->
+<!--                            app:iconTint="@color/birutua"-->
+<!--                            app:strokeColor="@color/birutua"-->
+<!--                            app:strokeWidth="2dp" />-->
+<!--                    </LinearLayout>-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Loading Layout -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/progressLayout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/white"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/cardImage"
+                app:layout_constraintStart_toStartOf="@id/cardImage"
+                app:layout_constraintTop_toBottomOf="@id/cardImage"
+                tools:visibility="gone">
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/progressIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    app:indicatorColor="@color/birutua"
+                    app:indicatorSize="60dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:trackThickness="6dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/poppinsmedium"
+                    android:text="Loading result..."
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/progressIndicator" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Error Layout -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/errorLayout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/cardImage"
+                app:layout_constraintStart_toStartOf="@id/cardImage"
+                app:layout_constraintTop_toBottomOf="@id/cardImage"
+                tools:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/ivError"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.4"/>
+
+                <TextView
+                    android:id="@+id/tvErrorTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Failed to Load Result"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivError" />
+
+                <TextView
+                    android:id="@+id/tvErrorMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/poppinsmedium"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvErrorTitle"
+                    app:layout_constraintWidth_percent="0.8"
+                    tools:text="Something went wrong. Please try again." />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRetry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:paddingStart="32dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="32dp"
+                    android:paddingBottom="12dp"
+                    android:text="Try Again"
+                    app:cornerRadius="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvErrorMessage" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
