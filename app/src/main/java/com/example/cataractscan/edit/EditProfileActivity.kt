@@ -157,6 +157,9 @@ class EditProfileActivity : AppCompatActivity() {
                     return@launch
                 }
 
+                // Show upload progress for image
+                showUploadProgress("Preparing image...")
+
                 // Process image upload
                 val uri = selectedImageUri!!
                 Log.d(TAG, "Processing selected image URI: $uri")
@@ -165,54 +168,53 @@ class EditProfileActivity : AppCompatActivity() {
 
                 if (imageFile.length() == 0L) {
                     Log.e(TAG, "Image file is empty after creation!")
-                    showToast("Gagal mengunggah: File gambar kosong.")
+                    showToast("Failed to upload: Image file is empty.")
                     setLoading(false)
                     return@launch
                 }
 
-                val mediaType = contentResolver.getType(uri)?.toMediaTypeOrNull()
-                    ?: "image/*".toMediaTypeOrNull()
+                // Get proper media type
+                val mediaType = getImageMediaType(uri)
+                Log.d(TAG, "Image media type: $mediaType")
 
-                if (mediaType == null) {
-                    Log.e(TAG, "Could not determine MediaType for image URI: $uri")
-                    showToast("Gagal mengunggah: Tipe gambar tidak didukung.")
-                    setLoading(false)
-                    return@launch
-                }
+                showUploadProgress("Sedang Upload...")
 
                 val requestFile = imageFile.asRequestBody(mediaType)
                 val imagePart = MultipartBody.Part.createFormData("image", imageFile.name, requestFile)
                 Log.d(TAG, "Multipart image part created. Filename: ${imageFile.name}, MediaType: $mediaType")
 
-                // Call API to update profile image only
-                val response = ApiClient.apiService.updateProfile("Bearer $token", imagePart)
+                // Try different API endpoints in order of preference
+                var response = try {
+                    Log.d(TAG, "Trying endpoint: profile/edit")
+                    ApiClient.apiService.updateProfile("Bearer $token", imagePart)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed with profile/edit endpoint: ${e.message}")
+                    null
+                }
+
+                // If first endpoint fails, try the alternative endpoint
+                if (response == null || !response.isSuccessful) {
+                    try {
+                        showUploadProgress("Tunggu Sebentar...")
+                        Log.d(TAG, "Trying alternative endpoint: auth/profile/edit")
+                        response = ApiClient.apiService.updateProfileAlternative("Bearer $token", imagePart)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed with auth/profile/edit endpoint: ${e.message}")
+                        response = null
+                    }
+                }
 
                 setLoading(false)
 
-                if (response.isSuccessful && response.body() != null) {
+                if (response != null && response.isSuccessful && response.body() != null) {
                     val responseBody = response.body()!!
                     Log.d(TAG, "Profile update successful. Message: ${responseBody.message}")
 
                     // Update local preferences with new image data from response
                     responseBody.user?.let { updatedUser ->
-                        // Convert UserProfileUpdate to User model that PreferenceManager expects
-                        // You might need to adjust this based on your PreferenceManager implementation
-
-                        // If your PreferenceManager has a method to save image URL directly:
                         updatedUser.imageLink?.let { imageUrl ->
                             preferenceManager.saveProfileImage(imageUrl)
                         }
-
-                        // Or if you need to convert to User model:
-                        /*
-                        val userModel = User(
-                            id = updatedUser.id,
-                            username = updatedUser.username,
-                            email = updatedUser.email,
-                            imageLink = updatedUser.imageLink
-                        )
-                        preferenceManager.saveUserProfile(userModel)
-                        */
                     }
 
                     // Save text data locally (name, email, address)
@@ -221,15 +223,39 @@ class EditProfileActivity : AppCompatActivity() {
                     showToast("Profile updated successfully")
                     finish()
                 } else {
-                    val errorBody = response.errorBody()?.string()
-                    Log.e(TAG, "Failed to update profile. Code: ${response.code()}, Error: $errorBody")
-                    showToast("Failed to update profile: ${response.code()}")
+                    val errorBody = response?.errorBody()?.string()
+                    val errorCode = response?.code() ?: 0
+                    Log.e(TAG, "Failed to update profile. Code: $errorCode, Error: $errorBody")
+
+                    when (errorCode) {
+                        404 -> showToast("Profile update endpoint not found. Please check with backend team.")
+                        401 -> showToast("Unauthorized. Please login again.")
+                        413 -> showToast("Image file too large. Please select a smaller image.")
+                        422 -> showToast("Invalid image format. Please select a valid image file.")
+                        else -> showToast("Failed to update profile. Error code: $errorCode")
+                    }
                 }
             } catch (e: Exception) {
                 setLoading(false)
                 Log.e(TAG, "Exception during profile update: ${e.message}", e)
-                showToast("Error: ${e.message}")
+                showToast("Network error: ${e.message}")
             }
+        }
+    }
+
+    private fun getImageMediaType(uri: Uri): okhttp3.MediaType? {
+        return try {
+            val mimeType = contentResolver.getType(uri)
+            when {
+                mimeType?.startsWith("image/jpeg") == true -> "image/jpeg".toMediaTypeOrNull()
+                mimeType?.startsWith("image/jpg") == true -> "image/jpeg".toMediaTypeOrNull()
+                mimeType?.startsWith("image/png") == true -> "image/png".toMediaTypeOrNull()
+                mimeType?.startsWith("image/webp") == true -> "image/webp".toMediaTypeOrNull()
+                else -> "image/jpeg".toMediaTypeOrNull() // Default fallback
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting media type: ${e.message}")
+            "image/jpeg".toMediaTypeOrNull()
         }
     }
 
@@ -254,10 +280,14 @@ class EditProfileActivity : AppCompatActivity() {
     private fun createFileFromUri(uri: Uri): File {
         val fileName = "profile_${System.currentTimeMillis()}.jpg"
         val file = File(cacheDir, fileName)
-        contentResolver.openInputStream(uri)?.use { inputStream ->
-            FileOutputStream(file).use { outputStream ->
-                inputStream.copyTo(outputStream)
+        try {
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(file).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error creating file from URI: ${e.message}")
         }
         return file
     }
@@ -275,12 +305,38 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun setLoading(isLoading: Boolean) {
-        binding.btnSave.isEnabled = !isLoading
-        binding.btnSave.text = if (isLoading) "Saving..." else "Save"
-        binding.btnChangePhoto.isEnabled = !isLoading
+        runOnUiThread {
+            binding.apply {
+                // Show/hide loading overlay
+                loadingOverlay.visibility = if (isLoading) View.VISIBLE else View.GONE
+
+                // Disable/enable buttons
+                btnSave.isEnabled = !isLoading
+                btnSave.text = if (isLoading) "Saving..." else "Simpan"
+                btnChangePhoto.isEnabled = !isLoading
+                btnBack.isEnabled = !isLoading
+
+                // Disable/enable input fields
+                etName.isEnabled = !isLoading
+                etEmail.isEnabled = !isLoading
+                etAddress.isEnabled = !isLoading
+            }
+        }
+    }
+
+    private fun showUploadProgress(message: String) {
+        runOnUiThread {
+            binding.apply {
+                loadingOverlay.visibility = View.VISIBLE
+                tvLoadingMessage.text = message
+                progressBar.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        runOnUiThread {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -51,12 +51,30 @@ interface ApiService {
         @Header("Authorization") authorization: String // Pass "Bearer {token}"
     ): Response<LogoutResponse>
 
-    // Profile update
+    // Primary Profile update endpoint
     @Multipart
     @PATCH("profile/edit")
     suspend fun updateProfile(
         @Header("Authorization") authorization: String, // Pass "Bearer {token}"
         @Part image: MultipartBody.Part?
+    ): Response<ProfileUpdateResponse>
+
+    // Alternative Profile update endpoint (fallback)
+    @Multipart
+    @PATCH("auth/profile/edit")
+    suspend fun updateProfileAlternative(
+        @Header("Authorization") authorization: String, // Pass "Bearer {token}"
+        @Part image: MultipartBody.Part?
+    ): Response<ProfileUpdateResponse>
+
+    // Profile update with text fields (if supported by backend)
+    @Multipart
+    @PATCH("profile/edit")
+    suspend fun updateProfileWithDetails(
+        @Header("Authorization") authorization: String, // Pass "Bearer {token}"
+        @Part image: MultipartBody.Part?,
+        @Part("username") username: okhttp3.RequestBody?,
+        @Part("email") email: okhttp3.RequestBody?
     ): Response<ProfileUpdateResponse>
 
     // Image Analysis
@@ -67,9 +85,15 @@ interface ApiService {
         @Part image: MultipartBody.Part
     ): Response<AnalysisResult>
 
-    // Get Profile Edit
-    @PATCH("auth/profile/edit")
+    // Get Profile Edit - Try different possible endpoints
+    @GET("profile/edit")
     suspend fun getProfileEdit(
+        @Header("Authorization") token: String
+    ): Response<ProfileEditResponse>
+
+    // Alternative endpoint for profile edit
+    @GET("auth/profile/edit")
+    suspend fun getProfileEditAlt(
         @Header("Authorization") token: String
     ): Response<ProfileEditResponse>
 
@@ -131,7 +155,7 @@ data class LogoutResponse(
 // UPDATED: ProfileUpdateResponse data class
 data class ProfileUpdateResponse(
     val message: String,
-    val user: UserProfileUpdate
+    val user: UserProfileUpdate?
 )
 
 data class UserProfileUpdate(
@@ -141,9 +165,9 @@ data class UserProfileUpdate(
     @SerializedName("image_link")
     val imageLink: String?,
     @SerializedName("createdAt")
-    val createdAt: String,
+    val createdAt: String?,
     @SerializedName("updatedAt")
-    val updatedAt: String
+    val updatedAt: String?
 )
 
 data class ForgotPasswordResponse(
