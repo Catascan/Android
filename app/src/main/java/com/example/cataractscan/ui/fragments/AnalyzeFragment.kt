@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.cataractscan.databinding.FragmentAnalyzeBinding
 import com.example.cataractscan.api.ApiClient
+import com.example.cataractscan.api.models.AnalysisResult
 import com.example.cataractscan.ui.activities.ResultActivity
 import com.example.cataractscan.utils.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
@@ -146,6 +147,12 @@ class AnalyzeFragment : Fragment() {
                         android.util.Log.d(TAG, "- Prediction: ${analysisResult.prediction}")
                         android.util.Log.d(TAG, "- Explanation: ${analysisResult.explanation}")
 
+                        // Save analysis result to local storage
+                        saveAnalysisToLocal(analysisResult, uri)
+
+                        // Update statistics
+                        updateStatistics(analysisResult)
+
                         // Show success message briefly
                         Snackbar.make(binding.root, "Analysis completed successfully!", Snackbar.LENGTH_SHORT).show()
 
@@ -192,6 +199,48 @@ class AnalyzeFragment : Fragment() {
                     Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    /**
+     * Menyimpan hasil analisis ke local storage
+     */
+    private fun saveAnalysisToLocal(analysisResult: AnalysisResult, imageUri: Uri) {
+        try {
+            // Save to SharedPreferences with timestamp as key
+            val timestamp = System.currentTimeMillis().toString()
+            val resultJson = Gson().toJson(analysisResult)
+
+            preferenceManager.saveAnalysisResult(timestamp, resultJson)
+            android.util.Log.d(TAG, "Analysis result saved locally with timestamp: $timestamp")
+
+            // Optional: Batasi jumlah hasil analisis yang tersimpan (maksimal 50)
+            preferenceManager.limitAnalysisResults(50)
+
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Failed to save analysis locally", e)
+        }
+    }
+
+    /**
+     * Update statistik setelah analisis berhasil
+     */
+    private fun updateStatistics(analysisResult: AnalysisResult) {
+        try {
+            // Increment total scans
+            preferenceManager.incrementTotalScans()
+
+            // Increment detected cases if cataract is detected
+            val prediction = analysisResult.prediction.lowercase()
+            if (prediction.contains("cataract") || prediction.contains("immature") || prediction.contains("mature")) {
+                preferenceManager.incrementDetectedCases()
+                android.util.Log.d(TAG, "Cataract detected, incrementing detected cases")
+            }
+
+            android.util.Log.d(TAG, "Statistics updated - Total scans: ${preferenceManager.getTotalScans()}, Detected cases: ${preferenceManager.getDetectedCases()}")
+
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Failed to update statistics", e)
         }
     }
 

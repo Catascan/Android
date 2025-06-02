@@ -34,6 +34,10 @@ class PreferenceManager(context: Context) {
         private const val KEY_TOTAL_SCANS = "total_scans"
         private const val KEY_DETECTED_CASES = "detected_cases"
         private const val KEY_ACCURACY = "accuracy"
+
+        // KONSTANTA UNTUK LOCAL ANALYSIS RESULTS
+        private const val KEY_LOCAL_ANALYSIS_PREFIX = "local_analysis_"
+        private const val KEY_LOCAL_ANALYSIS_KEYS = "local_analysis_keys"
     }
 
     // Auth related methods
@@ -263,5 +267,152 @@ class PreferenceManager(context: Context) {
             apply()
         }
         Log.d(TAG, "All statistics saved - Scans: $totalScans, Detected: $detectedCases, Accuracy: $accuracy%")
+    }
+
+    // ============= LOCAL ANALYSIS RESULTS METHODS =============
+
+    /**
+     * Menyimpan hasil analisis ke local storage dengan timestamp sebagai key
+     */
+    fun saveAnalysisResult(timestamp: String, analysisResultJson: String) {
+        try {
+            val key = "$KEY_LOCAL_ANALYSIS_PREFIX$timestamp"
+
+            // Simpan analysis result
+            sharedPreferences.edit().putString(key, analysisResultJson).apply()
+
+            // Update daftar keys yang tersimpan
+            val existingKeys = getLocalAnalysisKeys().toMutableSet()
+            existingKeys.add(timestamp)
+            saveLocalAnalysisKeys(existingKeys)
+
+            Log.d(TAG, "Analysis result saved locally with timestamp: $timestamp")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to save analysis result locally", e)
+        }
+    }
+
+    /**
+     * Mengambil hasil analisis berdasarkan timestamp
+     */
+    fun getAnalysisResult(timestamp: String): String? {
+        val key = "$KEY_LOCAL_ANALYSIS_PREFIX$timestamp"
+        return sharedPreferences.getString(key, null)
+    }
+
+    /**
+     * Mengambil semua hasil analisis yang tersimpan
+     */
+    fun getAllAnalysisResults(): Map<String, String> {
+        val results = mutableMapOf<String, String>()
+        val keys = getLocalAnalysisKeys()
+
+        for (timestamp in keys) {
+            val analysisResult = getAnalysisResult(timestamp)
+            if (analysisResult != null) {
+                results[timestamp] = analysisResult
+            }
+        }
+
+        Log.d(TAG, "Retrieved ${results.size} local analysis results")
+        return results
+    }
+
+    /**
+     * Menghapus hasil analisis berdasarkan timestamp
+     */
+    fun removeAnalysisResult(timestamp: String) {
+        try {
+            val key = "$KEY_LOCAL_ANALYSIS_PREFIX$timestamp"
+
+            // Hapus analysis result
+            sharedPreferences.edit().remove(key).apply()
+
+            // Update daftar keys
+            val existingKeys = getLocalAnalysisKeys().toMutableSet()
+            existingKeys.remove(timestamp)
+            saveLocalAnalysisKeys(existingKeys)
+
+            Log.d(TAG, "Analysis result removed: $timestamp")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to remove analysis result", e)
+        }
+    }
+
+    /**
+     * Menghapus semua hasil analisis lokal
+     */
+    fun clearAllAnalysisResults() {
+        try {
+            val keys = getLocalAnalysisKeys()
+            val editor = sharedPreferences.edit()
+
+            // Hapus semua analysis results
+            for (timestamp in keys) {
+                val key = "$KEY_LOCAL_ANALYSIS_PREFIX$timestamp"
+                editor.remove(key)
+            }
+
+            // Hapus daftar keys
+            editor.remove(KEY_LOCAL_ANALYSIS_KEYS)
+            editor.apply()
+
+            Log.d(TAG, "All local analysis results cleared")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to clear all analysis results", e)
+        }
+    }
+
+    /**
+     * Mendapatkan jumlah hasil analisis yang tersimpan
+     */
+    fun getAnalysisResultsCount(): Int {
+        return getLocalAnalysisKeys().size
+    }
+
+    /**
+     * Helper method untuk menyimpan daftar keys analysis results
+     */
+    private fun saveLocalAnalysisKeys(keys: Set<String>) {
+        val keysString = keys.joinToString(",")
+        sharedPreferences.edit().putString(KEY_LOCAL_ANALYSIS_KEYS, keysString).apply()
+    }
+
+    /**
+     * Helper method untuk mengambil daftar keys analysis results
+     */
+    private fun getLocalAnalysisKeys(): Set<String> {
+        val keysString = sharedPreferences.getString(KEY_LOCAL_ANALYSIS_KEYS, "") ?: ""
+        return if (keysString.isEmpty()) {
+            emptySet()
+        } else {
+            keysString.split(",").toSet()
+        }
+    }
+
+    /**
+     * Mendapatkan analysis results yang diurutkan berdasarkan timestamp (terbaru dulu)
+     */
+    fun getAnalysisResultsSorted(): List<Pair<String, String>> {
+        val results = getAllAnalysisResults()
+        return results.toList().sortedByDescending { it.first.toLongOrNull() ?: 0L }
+    }
+
+    /**
+     * Membatasi jumlah analysis results yang tersimpan (hapus yang paling lama)
+     */
+    fun limitAnalysisResults(maxCount: Int) {
+        try {
+            val sortedResults = getAnalysisResultsSorted()
+            if (sortedResults.size > maxCount) {
+                val toRemove = sortedResults.drop(maxCount)
+                for ((timestamp, _) in toRemove) {
+                    removeAnalysisResult(timestamp)
+                }
+                Log.d(TAG, "Limited analysis results to $maxCount items, removed ${toRemove.size} old items")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to limit analysis results", e)
+        }
     }
 }

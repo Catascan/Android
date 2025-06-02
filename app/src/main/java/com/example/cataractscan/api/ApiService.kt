@@ -2,6 +2,7 @@ package com.example.cataractscan.api
 
 import com.example.cataractscan.api.models.User
 import com.example.cataractscan.api.models.AnalysisResult
+import com.example.cataractscan.api.models.ConfidenceScores
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -183,7 +184,6 @@ data class ResetPasswordResponse(
     val message: String
 )
 
-// History response data classes
 data class HistoryResponse(
     val message: String,
     val history: List<HistoryItem>
@@ -195,7 +195,10 @@ data class HistoryItem(
     val explanation: String,
     val createdAt: String,
     val updatedAt: String,
-    val photoUrl: String
+    val photoUrl: String,
+    // Add confidence scores to history
+    @SerializedName("confidence_scores")
+    val confidenceScores: ConfidenceScores? = null
 )
 
 // Profile Response classes - Updated to match API response
@@ -244,3 +247,4 @@ data class UserProfile(
     @SerializedName("updatedAt")
     val updatedAt: String
 )
+

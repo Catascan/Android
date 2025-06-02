@@ -94,14 +94,14 @@ class ResultActivity : AppCompatActivity() {
             }
         }
 
-        // Display the results with animation
+        // Display the results with animation\\\
         analysisResult?.let { result ->
             android.util.Log.d(TAG, "Processing analysis result:")
             android.util.Log.d(TAG, "- Message: ${result.message}")
             android.util.Log.d(TAG, "- Prediction: ${result.prediction}")
-            android.util.Log.d(TAG, "- Normal: ${result.confidence_scores.normal}")
-            android.util.Log.d(TAG, "- Immature: ${result.confidence_scores.immature}")
-            android.util.Log.d(TAG, "- Mature: ${result.confidence_scores.mature}")
+            android.util.Log.d(TAG, "- Normal: ${result.confidenceScores.normal}")
+            android.util.Log.d(TAG, "- Immature: ${result.confidenceScores.immature}")
+            android.util.Log.d(TAG, "- Mature: ${result.confidenceScores.mature}")
 
             try {
                 // Show result layout with fade in animation
@@ -154,7 +154,7 @@ class ResultActivity : AppCompatActivity() {
 
                 // Display confidence scores with animation delay
                 android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                    val confidenceScores = result.confidence_scores
+                    val confidenceScores = result.confidenceScores
                     setupConfidenceScores(confidenceScores.normal, confidenceScores.immature, confidenceScores.mature)
                 }, 200)
 
@@ -169,67 +169,110 @@ class ResultActivity : AppCompatActivity() {
     }
 
     private fun setupConfidenceScores(normal: Float, immature: Float, mature: Float) {
-        // Convert to percentages
-        val normalPercent = (normal * 100).toInt()
-        val immaturePercent = (immature * 100).toInt()
-        val maturePercent = (mature * 100).toInt()
+        try {
+            // Convert to percentages
+            val normalPercent = (normal * 100).toInt()
+            val immaturePercent = (immature * 100).toInt()
+            val maturePercent = (mature * 100).toInt()
 
-        android.util.Log.d(TAG, "Setting confidence scores: Normal=$normalPercent%, Immature=$immaturePercent%, Mature=$maturePercent%")
+            android.util.Log.d(TAG, "Setting confidence scores: Normal=$normalPercent%, Immature=$immaturePercent%, Mature=$maturePercent%")
 
-        // Update text percentages first
-        binding.tvNormalPercent.text = "$normalPercent%"
-        binding.tvImmaturePercent.text = "$immaturePercent%"
-        binding.tvMaturePercent.text = "$maturePercent%"
+            // Check if confidence views exist before updating
+            if (::binding.isInitialized) {
+                try {
+                    // Update text percentages first - with null checks
+                    binding.tvNormalPercent?.text = "$normalPercent%"
+                    binding.tvImmaturePercent?.text = "$immaturePercent%"
+                    binding.tvMaturePercent?.text = "$maturePercent%"
 
-        // Animate progress bars from 0 to target value
-        animateProgressBar(binding.progressNormal, normalPercent)
-        animateProgressBar(binding.progressImmature, immaturePercent, 100)
-        animateProgressBar(binding.progressMature, maturePercent, 200)
+                    // Animate progress bars from 0 to target value - with null checks
+                    binding.progressNormal?.let { progressBar ->
+                        animateProgressBar(progressBar, normalPercent)
+                    }
+                    binding.progressImmature?.let { progressBar ->
+                        animateProgressBar(progressBar, immaturePercent, 100)
+                    }
+                    binding.progressMature?.let { progressBar ->
+                        animateProgressBar(progressBar, maturePercent, 200)
+                    }
+
+                    android.util.Log.d(TAG, "Confidence scores updated successfully")
+                } catch (e: Exception) {
+                    android.util.Log.e(TAG, "Error updating confidence views", e)
+                    // If confidence views don't exist, show a simple text summary
+                    showConfidenceAlternative(normalPercent, immaturePercent, maturePercent)
+                }
+            }
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Error in setupConfidenceScores", e)
+        }
     }
 
     private fun animateProgressBar(progressBar: com.google.android.material.progressindicator.LinearProgressIndicator, targetProgress: Int, delay: Long = 0) {
-        progressBar.progress = 0
+        try {
+            progressBar.progress = 0
 
-        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-            val animator = android.animation.ValueAnimator.ofInt(0, targetProgress)
-            animator.duration = 1000
-            animator.interpolator = android.view.animation.DecelerateInterpolator()
-            animator.addUpdateListener { animation ->
-                progressBar.progress = animation.animatedValue as Int
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                val animator = android.animation.ValueAnimator.ofInt(0, targetProgress)
+                animator.duration = 1000
+                animator.interpolator = android.view.animation.DecelerateInterpolator()
+                animator.addUpdateListener { animation ->
+                    try {
+                        progressBar.progress = animation.animatedValue as Int
+                    } catch (e: Exception) {
+                        android.util.Log.w(TAG, "Error updating progress bar animation", e)
+                    }
+                }
+                animator.start()
+            }, delay)
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Error animating progress bar", e)
+        }
+    }
+
+    private fun showConfidenceAlternative(normal: Int, immature: Int, mature: Int) {
+        // If progress bars don't exist, show confidence in explanation text
+        try {
+            val confidenceText = "Confidence Scores: Normal ${normal}%, Immature ${immature}%, Mature ${mature}%"
+            binding.tvExplanation?.let { explanationView ->
+                val currentText = explanationView.text.toString()
+                explanationView.text = "$currentText\n\n$confidenceText"
             }
-            animator.start()
-        }, delay)
+            android.util.Log.d(TAG, "Confidence shown in alternative format")
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Error showing confidence alternative", e)
+        }
     }
 
     private fun showErrorState(errorMessage: String) {
         android.util.Log.e(TAG, "Showing error state: $errorMessage")
-        binding.resultLayout.visibility = View.GONE
-        binding.errorLayout.visibility = View.VISIBLE
-        binding.tvErrorMessage.text = errorMessage
-
-        // Setup retry button if exists
         try {
-            binding.btnRetry.setOnClickListener {
+            binding.resultLayout?.visibility = View.GONE
+            binding.errorLayout?.visibility = View.VISIBLE
+            binding.tvErrorMessage?.text = errorMessage
+
+            // Setup retry button if exists
+            binding.btnRetry?.setOnClickListener {
                 android.util.Log.d(TAG, "Retry button clicked")
                 finish()
             }
         } catch (e: Exception) {
-            android.util.Log.w(TAG, "Retry button not found in layout")
+            android.util.Log.e(TAG, "Error showing error state", e)
         }
     }
 
     private fun shareResults() {
         android.util.Log.d(TAG, "Sharing results...")
 
-        if (binding.resultLayout.visibility != View.VISIBLE) {
+        if (binding.resultLayout?.visibility != View.VISIBLE) {
             android.util.Log.w(TAG, "Cannot share - results not visible")
             return
         }
 
         val confidenceText = analysisResult?.let { result ->
-            val normal = (result.confidence_scores.normal * 100).toInt()
-            val immature = (result.confidence_scores.immature * 100).toInt()
-            val mature = (result.confidence_scores.mature * 100).toInt()
+            val normal = (result.confidenceScores.normal * 100).toInt()
+            val immature = (result.confidenceScores.immature * 100).toInt()
+            val mature = (result.confidenceScores.mature * 100).toInt()
 
             "Confidence Scores:\n" +
                     "Normal: $normal%\n" +
@@ -237,9 +280,9 @@ class ResultActivity : AppCompatActivity() {
                     "Severe Cataract: $mature%\n"
         } ?: ""
 
-        val shareText = "${binding.tvDiagnosis.text}\n\n" +
+        val shareText = "${binding.tvDiagnosis?.text}\n\n" +
                 confidenceText + "\n" +
-                "Explanation: ${binding.tvExplanation.text}\n\n" +
+                "Explanation: ${binding.tvExplanation?.text}\n\n" +
                 "Analysis performed on ${SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date())}"
 
         val shareIntent = Intent().apply {

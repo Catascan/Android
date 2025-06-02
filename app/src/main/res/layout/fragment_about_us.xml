@@ -118,7 +118,6 @@
                     android:id="@+id/iv_pembimbing1_photo"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/img"
                     android:scaleType="centerCrop"
                     android:background="@drawable/rounded_image_background"
                     android:contentDescription="Foto Sofia Saidah" />
@@ -156,7 +155,6 @@
                     android:id="@+id/iv_pembimbing2_photo"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/img"
                     android:scaleType="centerCrop"
                     android:background="@drawable/rounded_image_background"
                     android:contentDescription="Foto Ir.Rita Magdalena" />
@@ -200,9 +198,7 @@
                         android:id="@+id/iv_niswah_photo"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/img"
                         android:scaleType="centerCrop"
-                        android:background="@drawable/rounded_image_background"
                         android:contentDescription="Foto Niswah Banun Tsaniya" />
 
                     <TextView
@@ -227,7 +223,6 @@
                         android:id="@+id/iv_arga_photo"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/arga"
                         android:scaleType="centerCrop"
                         android:background="@drawable/rounded_image_background"
                         android:contentDescription="Foto Arga Fajar Hilmi" />
@@ -255,7 +250,6 @@
                         android:id="@+id/iv_nabil_photo"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/nabil"
                         android:scaleType="centerCrop"
                         android:background="@drawable/rounded_image_background"
                         android:contentDescription="Foto Muhammad Nabil Rafa Azakiy" />
