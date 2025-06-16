@@ -7,10 +7,12 @@
     android:background="@drawable/gradient_backround3"
     tools:context=".register.RegisterActivity">
 
+
+    <!-- Fixed Header Image -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/imageContainer"
         android:layout_width="0dp"
-        android:layout_height="220dp"
+        android:layout_height="180dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -18,202 +20,450 @@
         <ImageView
             android:id="@+id/imgIllustration"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="200dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/regis_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Scroll Progress Indicator -->
+        <ProgressBar
+            android:id="@+id/scrollProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="8dp"
+            android:progressTint="@color/hijautua"
+            android:progressBackgroundTint="#E8F5E8"
+            android:max="100"
+            android:progress="0"
+            android:alpha="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Scroll Shadow Top -->
+    <View
+        android:id="@+id/scrollShadowTop"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:alpha="0"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageContainer" />
+
+    <!-- Main Content with Enhanced Scroll -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardRegister"
         android:layout_width="0dp"
-        android:layout_height="0dp" android:layout_marginTop="8dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp" app:cardBackgroundColor="@android:color/white"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="@android:color/white"
         app:cardCornerRadius="30dp"
-        app:cardElevation="8dp"
+        app:cardElevation="12dp"
         app:cardUseCompatPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageContainer"
-        app:layout_constraintBottom_toBottomOf="parent"> <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" android:fillViewport="true">
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/mainScrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="24dp">
-
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppinsregular"
-                android:text="Hallo,"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Daftar untuk memulai..."
-                android:textColor="@color/hijautua"
-                android:fontFamily="@font/poppinsregular"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvTitle" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
-                tools:visibility="visible" />
-
-            <EditText
-                android:id="@+id/nameEditText"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/poppinsregular"
-                android:background="@drawable/rounded_corner_background"
-                android:backgroundTint="@color/hijautua"
-                android:drawableStart="@drawable/ic_baseline_people_24"
-                android:drawablePadding="12dp"
-                android:hint="Masukan Nama Lengkap"
-                android:inputType="textPersonName|textCapWords"
-                android:padding="16dp"
-                android:textColor="@color/black"
-                android:textColorHint="@android:color/white"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
-
-            <EditText
-                android:id="@+id/emailEditText"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/rounded_corner_background"
-                android:backgroundTint="@color/hijautua"
-                android:drawableStart="@drawable/ic_baseline_email_24"
-                android:drawablePadding="12dp"
-                android:fontFamily="@font/poppinsregular"
-                android:hint="Masukan Email"
-                android:inputType="textEmailAddress"
-                android:padding="16dp"
-                android:textColor="@color/black"
-                android:textColorHint="@android:color/white"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/nameEditText" />
-
-            <EditText
-                android:id="@+id/passwordEditText"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/rounded_corner_background"
-                android:backgroundTint="@color/hijautua"
-                android:drawableStart="@drawable/ic_baseline_lock_24"
-                android:drawableEnd="@drawable/ic_visibility"
-                android:drawablePadding="12dp"
-                android:fontFamily="@font/poppinsregular"
-                android:hint="Masukan Password"
-                android:inputType="textPassword"
-                android:padding="16dp"
-                android:textColorHint="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/emailEditText" />
-
-            <EditText
-                android:id="@+id/confirmPasswordEditText"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/rounded_corner_background"
-                android:backgroundTint="@color/hijautua"
-                android:drawableStart="@drawable/ic_baseline_lock_24"
-                android:drawableEnd="@drawable/ic_visibility"
-                android:drawablePadding="12dp"
-                android:fontFamily="@font/poppinsregular"
-                android:hint="Konfirmasi Password"
-                android:inputType="textPassword"
-                android:padding="16dp"
-                android:textColorHint="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/passwordEditText" />
-
-            <Button
-                android:id="@+id/loginButton"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="@color/hijautua"
-                android:fontFamily="@font/poppinsregular"
-                android:text="Register"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:cornerRadius="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/confirmPasswordEditText" />
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:scrollbarSize="10dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:overScrollMode="ifContentScrolls"
+            android:clipToPadding="false">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/loginButton"
-                app:layout_constraintBottom_toBottomOf="parent"> <TextView
-                android:id="@+id/haveAccountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sudah punya akun? "
-                android:textColor="@color/black"
-                android:fontFamily="@font/poppinsregular"
-                android:textSize="14sp" />
+                android:orientation="vertical"
+                android:padding="24dp">
 
-                <TextView
-                    android:id="@+id/loginTextView"
-                    android:layout_width="wrap_content"
+                <!-- Header Section -->
+                <LinearLayout
+                    android:id="@+id/headerSection"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Masuk"
-                    android:textColor="@color/hijautua"
-                    android:fontFamily="@font/poppinsregular"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?android:attr/selectableItemBackground" />
+                    android:orientation="vertical"
+                    android:layout_marginBottom="20dp">
+
+                    <TextView
+                        android:id="@+id/tvTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppinsregular"
+                        android:text="Hallo,"
+                        android:textColor="@android:color/black"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Daftar untuk memulai..."
+                        android:textColor="@color/hijautua"
+                        android:fontFamily="@font/poppinsregular"
+                        android:textSize="16sp" />
+
+                    <!-- Form Progress Indicator -->
+                    <LinearLayout
+                        android:id="@+id/formProgressContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:alpha="0">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Progress: "
+                            android:textSize="12sp"
+                            android:textColor="@color/hijautua"
+                            android:fontFamily="@font/poppinsregular" />
+
+                        <TextView
+                            android:id="@+id/tvFormProgress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0/4"
+                            android:textSize="12sp"
+                            android:textColor="@color/hijautua"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/poppinsregular" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Input Fields Container -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/inputFieldsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="#F8F9FA">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <!-- Name Input with Focus Indicator -->
+                        <RelativeLayout
+                            android:id="@+id/nameContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:padding="4dp">
+
+                            <View
+                                android:id="@+id/nameFocusIndicator"
+                                android:layout_width="4dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentStart="true"
+                                android:background="@color/hijautua"
+                                android:alpha="0"
+                                android:layout_marginEnd="8dp" />
+
+                            <EditText
+                                android:id="@+id/nameEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:layout_toEndOf="@id/nameFocusIndicator"
+                                android:fontFamily="@font/poppinsregular"
+                                android:background="@drawable/rounded_corner_background"
+                                android:backgroundTint="@color/hijautua"
+                                android:drawableStart="@drawable/ic_baseline_people_24"
+                                android:drawablePadding="12dp"
+                                android:hint="Masukan Nama Lengkap"
+                                android:inputType="textPersonName|textCapWords"
+                                android:padding="16dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@android:color/white"
+                                android:textSize="14sp"
+                                android:imeOptions="actionNext" />
+
+                        </RelativeLayout>
+
+                        <!-- Email Input with Focus Indicator -->
+                        <RelativeLayout
+                            android:id="@+id/emailContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:padding="4dp">
+
+                            <View
+                                android:id="@+id/emailFocusIndicator"
+                                android:layout_width="4dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentStart="true"
+                                android:background="@color/hijautua"
+                                android:alpha="0"
+                                android:layout_marginEnd="8dp" />
+
+                            <EditText
+                                android:id="@+id/emailEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:layout_toEndOf="@id/emailFocusIndicator"
+                                android:background="@drawable/rounded_corner_background"
+                                android:backgroundTint="@color/hijautua"
+                                android:drawableStart="@drawable/ic_baseline_email_24"
+                                android:drawablePadding="12dp"
+                                android:fontFamily="@font/poppinsregular"
+                                android:hint="Masukan Email"
+                                android:inputType="textEmailAddress"
+                                android:padding="16dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@android:color/white"
+                                android:textSize="14sp"
+                                android:imeOptions="actionNext" />
+
+                        </RelativeLayout>
+
+                        <!-- Password Input with Focus Indicator -->
+                        <RelativeLayout
+                            android:id="@+id/passwordContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:padding="4dp">
+
+                            <View
+                                android:id="@+id/passwordFocusIndicator"
+                                android:layout_width="4dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentStart="true"
+                                android:background="@color/hijautua"
+                                android:alpha="0"
+                                android:layout_marginEnd="8dp" />
+
+                            <EditText
+                                android:id="@+id/passwordEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:layout_toEndOf="@id/passwordFocusIndicator"
+                                android:background="@drawable/rounded_corner_background"
+                                android:backgroundTint="@color/hijautua"
+                                android:drawableStart="@drawable/ic_baseline_lock_24"
+                                android:drawableEnd="@drawable/ic_visibility"
+                                android:drawablePadding="12dp"
+                                android:fontFamily="@font/poppinsregular"
+                                android:hint="Masukan Password"
+                                android:inputType="textPassword"
+                                android:padding="16dp"
+                                android:textColorHint="@color/white"
+                                android:textSize="14sp"
+                                android:imeOptions="actionNext" />
+
+                        </RelativeLayout>
+
+                        <!-- Confirm Password Input with Focus Indicator -->
+                        <RelativeLayout
+                            android:id="@+id/confirmPasswordContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="4dp">
+
+                            <View
+                                android:id="@+id/confirmPasswordFocusIndicator"
+                                android:layout_width="4dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentStart="true"
+                                android:background="@color/hijautua"
+                                android:alpha="0"
+                                android:layout_marginEnd="8dp" />
+
+                            <EditText
+                                android:id="@+id/confirmPasswordEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:layout_toEndOf="@id/confirmPasswordFocusIndicator"
+                                android:background="@drawable/rounded_corner_background"
+                                android:backgroundTint="@color/hijautua"
+                                android:drawableStart="@drawable/ic_baseline_lock_24"
+                                android:drawableEnd="@drawable/ic_visibility"
+                                android:drawablePadding="12dp"
+                                android:fontFamily="@font/poppinsregular"
+                                android:hint="Konfirmasi Password"
+                                android:inputType="textPassword"
+                                android:padding="16dp"
+                                android:textColorHint="@color/white"
+                                android:textSize="14sp"
+                                android:imeOptions="actionDone" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Action Section -->
+                <LinearLayout
+                    android:id="@+id/actionSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <!-- Register Button with Progress -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp">
+
+                        <Button
+                            android:id="@+id/loginButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:backgroundTint="@color/hijautua"
+                            android:fontFamily="@font/poppinsregular"
+                            android:text="Register"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:elevation="6dp"
+                            app:cornerRadius="12dp" />
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            style="?android:attr/progressBarStyle"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_centerInParent="true"
+                            android:visibility="gone"
+                            android:indeterminateTint="@android:color/white" />
+
+                    </RelativeLayout>
+
+                    <!-- Login Link -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:id="@+id/haveAccountTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sudah punya akun? "
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppinsregular"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/loginTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Masuk"
+                            android:textColor="@color/hijautua"
+                            android:fontFamily="@font/poppinsregular"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Extra Space for Scroll -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp" />
+
             </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView> </androidx.cardview.widget.CardView>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Scroll Shadow Bottom -->
+    <View
+        android:id="@+id/scrollShadowBottom"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:alpha="0"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Floating Action Helper -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabScrollHelper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="80dp"
+        android:backgroundTint="@color/hijautua"
+        android:tint="@android:color/white"
+        app:fabSize="mini"
+        app:elevation="8dp"
+        android:alpha="0"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Field Navigation Helper -->
+    <LinearLayout
+        android:id="@+id/fieldNavigationHelper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="140dp"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:alpha="0"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnFieldUp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginBottom="4dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Previous Field"
+            />
+
+        <ImageButton
+            android:id="@+id/btnFieldDown"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Next Field"
+             />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

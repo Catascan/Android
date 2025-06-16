@@ -20,16 +20,16 @@ interface ApiService {
         @Body registerRequest: RegisterRequest
     ): Response<RegisterResponse>
 
-    // Forgot Password
+    // UPDATED: Forgot Password - ubah dari ForgotRequest ke ForgotPasswordRequest
     @POST("auth/forgot-password")
     suspend fun forgotPassword(
-        @Body forgotRequest: ForgotRequest
+        @Body request: ForgotPasswordRequest
     ): Response<ForgotPasswordResponse>
 
     // Change Password (for logged-in users)
     @PATCH("auth/change-password")
     suspend fun changePassword(
-        @Header("Authorization") authorization: String, // Pass "Bearer {token}"
+        @Header("Authorization") authorization: String,
         @Body request: ChangePasswordRequest
     ): Response<ChangePasswordResponse>
 
@@ -40,39 +40,37 @@ interface ApiService {
         @Body request: ResetPasswordRequest
     ): Response<ResetPasswordResponse>
 
-    // User Profile - Updated endpoint to match your API
+    // User Profile
     @GET("auth/user")
     suspend fun getUserProfile(
-        @Header("Authorization") authorization: String // Pass "Bearer {token}"
+        @Header("Authorization") authorization: String
     ): Response<UserProfileResponse>
 
     // Logout
     @POST("auth/logout")
     suspend fun logout(
-        @Header("Authorization") authorization: String // Pass "Bearer {token}"
+        @Header("Authorization") authorization: String
     ): Response<LogoutResponse>
 
-    // Primary Profile update endpoint
+    // Profile update endpoints
     @Multipart
     @PATCH("profile/edit")
     suspend fun updateProfile(
-        @Header("Authorization") authorization: String, // Pass "Bearer {token}"
+        @Header("Authorization") authorization: String,
         @Part image: MultipartBody.Part?
     ): Response<ProfileUpdateResponse>
 
-    // Alternative Profile update endpoint (fallback)
     @Multipart
     @PATCH("auth/profile/edit")
     suspend fun updateProfileAlternative(
-        @Header("Authorization") authorization: String, // Pass "Bearer {token}"
+        @Header("Authorization") authorization: String,
         @Part image: MultipartBody.Part?
     ): Response<ProfileUpdateResponse>
 
-    // Profile update with text fields (if supported by backend)
     @Multipart
     @PATCH("profile/edit")
     suspend fun updateProfileWithDetails(
-        @Header("Authorization") authorization: String, // Pass "Bearer {token}"
+        @Header("Authorization") authorization: String,
         @Part image: MultipartBody.Part?,
         @Part("username") username: okhttp3.RequestBody?,
         @Part("email") email: okhttp3.RequestBody?
@@ -82,17 +80,16 @@ interface ApiService {
     @Multipart
     @POST("user/dashboard/predict")
     suspend fun analyzeImage(
-        @Header("Authorization") authorization: String, // Pass "Bearer {token}"
+        @Header("Authorization") authorization: String,
         @Part image: MultipartBody.Part
     ): Response<AnalysisResult>
 
-    // Get Profile Edit - Try different possible endpoints
+    // Get Profile Edit endpoints
     @GET("profile/edit")
     suspend fun getProfileEdit(
         @Header("Authorization") token: String
     ): Response<ProfileEditResponse>
 
-    // Alternative endpoint for profile edit
     @GET("auth/profile/edit")
     suspend fun getProfileEditAlt(
         @Header("Authorization") token: String
@@ -101,7 +98,7 @@ interface ApiService {
     // History endpoint
     @GET("user/dashboard/history")
     suspend fun getHistory(
-        @Header("Authorization") authorization: String // Pass "Bearer {token}"
+        @Header("Authorization") authorization: String
     ): Response<HistoryResponse>
 }
 
@@ -111,7 +108,8 @@ data class LoginRequest(
     val password: String
 )
 
-data class ForgotRequest(
+// UPDATED: Ubah nama dari ForgotRequest ke ForgotPasswordRequest untuk konsistensi
+data class ForgotPasswordRequest(
     val email: String
 )
 
@@ -153,7 +151,6 @@ data class LogoutResponse(
     val message: String
 )
 
-// UPDATED: ProfileUpdateResponse data class
 data class ProfileUpdateResponse(
     val message: String,
     val user: UserProfileUpdate?
@@ -171,9 +168,10 @@ data class UserProfileUpdate(
     val updatedAt: String?
 )
 
+// UPDATED: ForgotPasswordResponse - sesuaikan dengan backend response
 data class ForgotPasswordResponse(
-    val message: String,
-    val resetLink: String? = null
+    val success: Boolean,
+    val message: String
 )
 
 data class ChangePasswordResponse(
@@ -196,18 +194,16 @@ data class HistoryItem(
     val createdAt: String,
     val updatedAt: String,
     val photoUrl: String,
-    // Add confidence scores to history
     @SerializedName("confidence_scores")
     val confidenceScores: ConfidenceScores? = null
 )
 
-// Profile Response classes - Updated to match API response
+// Profile Response classes
 data class ProfileResponse(
     val message: String,
     val user: UserProfile
 )
 
-// ProfileEditResponse for getProfileEdit endpoint
 data class ProfileEditResponse(
     val message: String,
     val user: ProfileEditUser
@@ -223,7 +219,6 @@ data class ProfileEditUser(
     val updatedAt: String
 )
 
-// UserProfileResponse for getUserProfile endpoint
 data class UserProfileResponse(
     val message: String,
     val user: UserProfileData
@@ -247,4 +242,3 @@ data class UserProfile(
     @SerializedName("updatedAt")
     val updatedAt: String
 )
-

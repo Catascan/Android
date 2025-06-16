@@ -6,23 +6,26 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.cataractscan.R
-import com.example.cataractscan.databinding.ActivityForgotPasswordBinding // Pastikan import ini benar dan kelas ini tergenerasi
+import com.example.cataractscan.databinding.ActivityForgotPasswordBinding
 import com.example.cataractscan.api.ApiClient
-import com.example.cataractscan.api.ForgotRequest
+import com.example.cataractscan.api.ForgotPasswordRequest
 import kotlinx.coroutines.launch
-import android.text.InputType
-import android.view.MotionEvent
-import android.widget.EditText // Penting: Tambahkan import ini untuk casting EditText
+import android.util.Log
+import androidx.activity.addCallback
 
 class ForgotPasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityForgotPasswordBinding
+    private val apiService = ApiClient.apiService
+
+    companion object {
+        private const val TAG = "ForgotPasswordActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,40 +65,37 @@ class ForgotPasswordActivity : AppCompatActivity() {
                             or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     )
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "Error setting up fullscreen", e)
         }
     }
 
     private fun setupClickListeners() {
+        // Reset password button
         binding.resetPasswordButton.setOnClickListener {
             sendResetPasswordEmail()
         }
 
-        // Add back button if exists
-        // Perbaikan: btnBack seharusnya memiliki ID yang berbeda dari resetPasswordButton
-        // Asumsi ada btnBack di layout Anda
+        // Back button - pastikan ID ini ada di layout Anda
         try {
-            // Jika ada tombol kembali dengan ID 'btnBack' di layout:
-            // binding.btnBack.setOnClickListener {
-            //     onBackPressedDispatcher.onBackPressed()
-            // }
+            // Jika ada btnBack di layout
+            findViewById<View>(R.id.btnBack)?.setOnClickListener {
+                finish()
+            }
         } catch (e: Exception) {
-            // btnBack might not exist in layout, handle gracefully
+            Log.w(TAG, "btnBack not found in layout", e)
+        }
+
+        // Alternative: Handle sistem back button
+        onBackPressedDispatcher.addCallback(this) {
+            finish()
         }
     }
 
     private fun sendResetPasswordEmail() {
         val email = binding.emailEditText.text.toString().trim()
 
-        if (email.isEmpty()) {
-            Toast.makeText(this, "Harap masukkan email Anda", Toast.LENGTH_SHORT).show()
-            binding.emailEditText.requestFocus()
-            return
-        }
-
-        if (!isValidEmail(email)) {
-            Toast.makeText(this, "Format email tidak valid", Toast.LENGTH_SHORT).show()
-            binding.emailEditText.requestFocus()
+        // Validasi input
+        if (!validateEmail(email)) {
             return
         }
 
@@ -103,53 +103,132 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                val forgotRequest = ForgotRequest(email)
-                val response = ApiClient.apiService.forgotPassword(forgotRequest)
+                Log.d(TAG, "Sending reset password email to: $email")
+
+                // Gunakan ForgotPasswordRequest sesuai dengan ApiService
+                val request = ForgotPasswordRequest(email)
+                val response = apiService.forgotPassword(request)
 
                 setLoading(false)
 
-                if (response.isSuccessful && response.body() != null) {
-                    val forgotPasswordResponse = response.body()!!
-                    val messageToDisplay = forgotPasswordResponse.message.takeIf { it.isNotBlank() }
-                        ?: "Email reset password telah dikirim ke $email"
+                if (response.isSuccessful) {
+                    val result = response.body()
+                    Log.d(TAG, "Response: ${result?.message}")
 
-                    Toast.makeText(this@ForgotPasswordActivity, messageToDisplay, Toast.LENGTH_LONG).show()
-                    // MULAI PERUBAHAN DI SINI
-                    // Arahkan secara eksplisit ke LoginActivity dan bersihkan back stack
-                    val intent = Intent(this@ForgotPasswordActivity, LoginActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    // Check success field dari response
+                    if (result?.success == true) {
+                        showSuccessMessage(email, result.message)
+                    } else {
+                        // Jika tidak ada success field, anggap berhasil jika ada message
+                        if (!result?.message.isNullOrBlank()) {
+                            showSuccessMessage(email, result!!.message)
+                        } else {
+                            showError("Gagal mengirim email reset")
+                        }
                     }
-                    startActivity(intent)
-                    finish() // Selesaikan ForgotPasswordActivity
-                    // AKHIR PERUBAHAN DI SINI
                 } else {
-                    val errorMessage = when (response.code()) {
-                        400 -> "Permintaan tidak valid. Periksa email Anda."
-                        404 -> "Email tidak terdaftar dalam sistem."
-                        429 -> "Terlalu banyak permintaan. Coba lagi nanti."
-                        500 -> "Server error, coba lagi nanti."
-                        else -> "Gagal mengirim link reset password. Kode: ${response.code()}"
-                    }
-                    Toast.makeText(this@ForgotPasswordActivity, errorMessage, Toast.LENGTH_LONG).show()
+                    handleErrorResponse(response.code())
                 }
+
             } catch (e: Exception) {
                 setLoading(false)
-                val errorMessage = when {
-                    e.message?.contains("timeout", true) == true -> "Koneksi timeout, coba lagi"
-                    e.message?.contains("network", true) == true -> "Tidak ada koneksi internet"
-                    e.message?.contains("host", true) == true -> "Server tidak dapat diakses"
-                    else -> "Terjadi kesalahan: ${e.message}"
-                }
-                Toast.makeText(this@ForgotPasswordActivity, errorMessage, Toast.LENGTH_LONG).show()
-                e.printStackTrace()
+                handleNetworkError(e)
             }
         }
     }
 
+    private fun validateEmail(email: String): Boolean {
+        return when {
+            email.isEmpty() -> {
+                binding.emailEditText.error = "Email tidak boleh kosong"
+                binding.emailEditText.requestFocus()
+                false
+            }
+            !isValidEmail(email) -> {
+                binding.emailEditText.error = "Format email tidak valid"
+                binding.emailEditText.requestFocus()
+                false
+            }
+            else -> {
+                binding.emailEditText.error = null
+                true
+            }
+        }
+    }
+
+    private fun showSuccessMessage(email: String, message: String) {
+        val displayMessage = message.takeIf { it.isNotBlank() }
+            ?: "Email reset password telah dikirim ke $email"
+
+        // Show success dialog
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Email Terkirim")
+            .setMessage("$displayMessage\n\nSilakan periksa email Anda dan ikuti instruksi untuk reset password.")
+            .setPositiveButton("OK") { _, _ ->
+                navigateToLogin()
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun navigateToLogin() {
+        try {
+            val intent = Intent(this, LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            startActivity(intent)
+            finish()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error navigating to LoginActivity", e)
+            // Fallback: just finish this activity
+            finish()
+        }
+    }
+
+    private fun handleErrorResponse(code: Int) {
+        val errorMessage = when (code) {
+            400 -> "Permintaan tidak valid. Periksa email Anda."
+            404 -> "Email tidak terdaftar dalam sistem."
+            429 -> "Terlalu banyak permintaan. Coba lagi nanti."
+            500 -> "Server error, coba lagi nanti."
+            else -> "Gagal mengirim link reset password. Kode: $code"
+        }
+        showError(errorMessage)
+    }
+
+    private fun handleNetworkError(e: Exception) {
+        Log.e(TAG, "Network error", e)
+        val errorMessage = when {
+            e.message?.contains("timeout", true) == true -> "Koneksi timeout, coba lagi"
+            e.message?.contains("network", true) == true -> "Tidak ada koneksi internet"
+            e.message?.contains("host", true) == true -> "Server tidak dapat diakses"
+            e.message?.contains("ConnectException", true) == true -> "Tidak dapat terhubung ke server"
+            e.message?.contains("UnknownHostException", true) == true -> "Server tidak ditemukan"
+            e.message?.contains("Failed to connect", true) == true -> "Gagal terhubung ke server"
+            else -> "Terjadi kesalahan jaringan: ${e.message}"
+        }
+        showError(errorMessage)
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
     private fun setLoading(isLoading: Boolean) {
-        binding.resetPasswordButton.isEnabled = !isLoading
-        binding.resetPasswordButton.text = if (isLoading) "Mengirim..." else "Confirm Email"
-        binding.emailEditText.isEnabled = !isLoading
+        binding.apply {
+            resetPasswordButton.isEnabled = !isLoading
+            resetPasswordButton.text = if (isLoading) "Mengirim..." else "Confirm Email"
+            emailEditText.isEnabled = !isLoading
+
+            // Show/hide progress bar if exists
+            try {
+                // Jika ada progressBar di layout
+                findViewById<View>(R.id.progressBar)?.visibility =
+                    if (isLoading) View.VISIBLE else View.GONE
+            } catch (e: Exception) {
+                // progressBar tidak ada di layout
+            }
+        }
     }
 
     private fun isValidEmail(email: String): Boolean {

@@ -7,7 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
-    private const val BASE_URL = "https://catascan-api-54467349495.asia-southeast1.run.app/"  // Replace with your actual API endpoint
+    // Update dengan devtunnel URL Anda yang aktual
+    private const val BASE_URL = "https://hctqpvn8-3000.asse.devtunnels.ms/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -18,6 +19,7 @@ object ApiClient {
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
+        .retryOnConnectionFailure(true) // Auto retry on connection failure
         .build()
 
     private val retrofit = Retrofit.Builder()
