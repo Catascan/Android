@@ -1,4 +1,3 @@
-
 package com.example.cataractscan.ui.fragments
 
 import android.content.Intent
@@ -71,11 +70,11 @@ class HistoryFragment : Fragment() {
     }
 
     private fun loadHistory() {
-        android.util.Log.d(TAG, "Loading history...")
+        Log.d(TAG, "=== LOADING HISTORY ===")
 
         val token = preferenceManager.getToken()
         if (token.isNullOrEmpty()) {
-            android.util.Log.e(TAG, "No auth token available")
+            Log.e(TAG, "No auth token available")
             showErrorState("Session expired. Please login again.")
             return
         }
@@ -84,19 +83,56 @@ class HistoryFragment : Fragment() {
 
         lifecycleScope.launch {
             try {
-                android.util.Log.d(TAG, "Calling history API with token: Bearer ${token.take(10)}...")
+                Log.d(TAG, "Calling history API with token: Bearer ${token.take(10)}...")
 
                 val response = ApiClient.apiService.getHistory("Bearer $token")
 
-                android.util.Log.d(TAG, "History API response:")
-                android.util.Log.d(TAG, "- Response code: ${response.code()}")
-                android.util.Log.d(TAG, "- Is successful: ${response.isSuccessful}")
+                Log.d(TAG, "=== HISTORY API RESPONSE ===")
+                Log.d(TAG, "Response code: ${response.code()}")
+                Log.d(TAG, "Is successful: ${response.isSuccessful}")
 
                 if (response.isSuccessful && response.body() != null) {
                     val historyResponse = response.body()!!
-                    android.util.Log.d(TAG, "History loaded successfully:")
-                    android.util.Log.d(TAG, "- Message: ${historyResponse.message}")
-                    android.util.Log.d(TAG, "- History count: ${historyResponse.history.size}")
+                    Log.d(TAG, "History loaded successfully:")
+                    Log.d(TAG, "Message: ${historyResponse.message}")
+                    Log.d(TAG, "History count: ${historyResponse.history.size}")
+
+                    // Debug setiap item yang diterima dari API
+                    historyResponse.history.forEachIndexed { index, item ->
+                        Log.d(TAG, "=== BACKEND HISTORY ITEM $index ===")
+                        Log.d(TAG, "ID: ${item.id}")
+                        Log.d(TAG, "Prediction: '${item.prediction}'")
+                        Log.d(TAG, "PhotoURL: '${item.photoUrl}'")
+                        Log.d(TAG, "ConfidenceScores from BACKEND: ${item.confidenceScores}")
+
+                        item.confidenceScores?.let { scores ->
+                            val total = scores.normal + scores.immature + scores.mature
+                            Log.d(TAG, "BACKEND Confidence Details:")
+                            Log.d(TAG, "  Normal: ${scores.normal}")
+                            Log.d(TAG, "  Immature: ${scores.immature}")
+                            Log.d(TAG, "  Mature: ${scores.mature}")
+                            Log.d(TAG, "  Total: $total")
+                            Log.d(TAG, "  Format: ${if (total > 10) "Percentage (0-100)" else "Decimal (0.0-1.0)"}")
+
+                            // Identify the highest confidence
+                            val maxConfidence = maxOf(scores.normal, scores.immature, scores.mature)
+                            val predictedCategory = when (maxConfidence) {
+                                scores.normal -> "Normal"
+                                scores.immature -> "Immature"
+                                scores.mature -> "Mature"
+                                else -> "Unknown"
+                            }
+                            Log.d(TAG, "  Highest confidence: $predictedCategory ($maxConfidence)")
+                            Log.d(TAG, "  Backend prediction: ${item.prediction}")
+
+                            if (predictedCategory.lowercase() != item.prediction.lowercase()) {
+                                Log.w(TAG, "⚠️ MISMATCH: Prediction='${item.prediction}' but highest confidence is '$predictedCategory'")
+                            }
+                        } ?: run {
+                            Log.w(TAG, "⚠️ No confidence scores from backend for item ${item.id}")
+                        }
+                        Log.d(TAG, "===============================")
+                    }
 
                     if (historyResponse.history.isEmpty()) {
                         showEmptyState()
@@ -105,7 +141,7 @@ class HistoryFragment : Fragment() {
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
-                    android.util.Log.e(TAG, "History API error: ${response.code()} - $errorBody")
+                    Log.e(TAG, "History API error: ${response.code()} - $errorBody")
 
                     val errorMessage = when (response.code()) {
                         401 -> "Session expired. Please login again."
@@ -116,7 +152,7 @@ class HistoryFragment : Fragment() {
                     showErrorState(errorMessage)
                 }
             } catch (e: Exception) {
-                android.util.Log.e(TAG, "Exception loading history", e)
+                Log.e(TAG, "Exception loading history", e)
 
                 val errorMessage = when {
                     e.message?.contains("timeout", true) == true -> "Connection timeout. Please check your internet connection."
@@ -137,7 +173,7 @@ class HistoryFragment : Fragment() {
     }
 
     private fun showHistoryList(historyList: List<HistoryItem>) {
-        android.util.Log.d(TAG, "Showing history list with ${historyList.size} items")
+        Log.d(TAG, "Showing history list with ${historyList.size} items")
 
         historyAdapter.submitList(historyList)
 
@@ -148,7 +184,7 @@ class HistoryFragment : Fragment() {
     }
 
     private fun showEmptyState() {
-        android.util.Log.d(TAG, "Showing empty state")
+        Log.d(TAG, "Showing empty state")
 
         binding.emptyLayout.visibility = View.VISIBLE
         binding.rvHistory.visibility = View.GONE
@@ -157,7 +193,7 @@ class HistoryFragment : Fragment() {
     }
 
     private fun showErrorState(errorMessage: String) {
-        android.util.Log.e(TAG, "Showing error state: $errorMessage")
+        Log.e(TAG, "Showing error state: $errorMessage")
 
         binding.tvErrorMessage.text = errorMessage
         binding.errorLayout.visibility = View.VISIBLE
@@ -167,18 +203,40 @@ class HistoryFragment : Fragment() {
     }
 
     private fun openHistoryDetail(historyItem: HistoryItem) {
-        android.util.Log.d(TAG, "Opening history detail for item #${historyItem.id}")
+        Log.d(TAG, "=== OPENING HISTORY DETAIL ===")
+        Log.d(TAG, "Item ID: ${historyItem.id}")
+        Log.d(TAG, "Backend prediction: '${historyItem.prediction}'")
+        Log.d(TAG, "Backend confidence scores: ${historyItem.confidenceScores}")
 
         try {
-            // Use actual confidence scores if available, otherwise create realistic defaults
-            val confidenceScores = historyItem.confidenceScores ?: createRealisticConfidenceScores(historyItem.prediction)
+            // PRIORITAS: Selalu gunakan confidence scores asli dari backend jika ada
+            val finalConfidenceScores = if (historyItem.confidenceScores != null) {
+                Log.d(TAG, "✅ USING ORIGINAL BACKEND CONFIDENCE SCORES")
+                Log.d(TAG, "Backend scores breakdown:")
+                Log.d(TAG, "  Normal: ${historyItem.confidenceScores.normal}")
+                Log.d(TAG, "  Immature: ${historyItem.confidenceScores.immature}")
+                Log.d(TAG, "  Mature: ${historyItem.confidenceScores.mature}")
 
-            // Convert HistoryItem to AnalysisResult for compatibility with ResultActivity
+                // Use original backend scores AS-IS
+                historyItem.confidenceScores
+            } else {
+                Log.w(TAG, "⚠️ Backend didn't provide confidence scores, creating fallback")
+                createMinimalFallbackScores(historyItem.prediction)
+            }
+
+            // Debug final scores yang akan digunakan
+            Log.d(TAG, "=== FINAL SCORES FOR RESULT ACTIVITY ===")
+            Log.d(TAG, "  Normal: ${finalConfidenceScores.normal}")
+            Log.d(TAG, "  Immature: ${finalConfidenceScores.immature}")
+            Log.d(TAG, "  Mature: ${finalConfidenceScores.mature}")
+            Log.d(TAG, "  Total: ${finalConfidenceScores.normal + finalConfidenceScores.immature + finalConfidenceScores.mature}")
+
+            // Convert HistoryItem to AnalysisResult
             val analysisResult = AnalysisResult(
                 message = "History Analysis #${historyItem.id}",
-                prediction = historyItem.prediction,
+                prediction = historyItem.prediction, // Use exact backend prediction
                 explanation = historyItem.explanation,
-                confidenceScores = confidenceScores,
+                confidenceScores = finalConfidenceScores, // Use backend scores
                 photoUrl = historyItem.photoUrl,
                 id = historyItem.id,
                 createdAt = historyItem.createdAt,
@@ -186,6 +244,7 @@ class HistoryFragment : Fragment() {
             )
 
             val resultJson = Gson().toJson(analysisResult)
+            Log.d(TAG, "Final AnalysisResult JSON length: ${resultJson.length}")
 
             val intent = Intent(requireContext(), ResultActivity::class.java).apply {
                 putExtra(ResultActivity.ANALYSIS_RESULT, resultJson)
@@ -196,44 +255,30 @@ class HistoryFragment : Fragment() {
 
             startActivity(intent)
         } catch (e: Exception) {
-            android.util.Log.e(TAG, "Error opening history detail", e)
+            Log.e(TAG, "Error opening history detail", e)
             android.widget.Toast.makeText(
                 requireContext(),
-                "Failed to open history detail",
+                "Failed to open history detail: ${e.message}",
                 android.widget.Toast.LENGTH_SHORT
             ).show()
         }
     }
 
     /**
-     * Creates realistic confidence scores based on prediction
-     * This is used when the backend doesn't return confidence scores in history
+     * Minimal fallback hanya untuk kasus backend tidak mengirim confidence scores
+     * Sebaiknya backend selalu mengirim confidence scores yang benar
      */
-    private fun createRealisticConfidenceScores(prediction: String): ConfidenceScores {
+    private fun createMinimalFallbackScores(prediction: String): ConfidenceScores {
+        Log.w(TAG, "⚠️ Creating minimal fallback scores for: $prediction")
+
+        // Very simple fallback - just put high confidence on the prediction
         return when (prediction.lowercase()) {
-            "normal" -> ConfidenceScores(
-                normal = (85..95).random() / 100f,
-                immature = (3..8).random() / 100f,
-                mature = (2..7).random() / 100f
-            )
-            "immature", "immature cataract" -> ConfidenceScores(
-                normal = (5..12).random() / 100f,
-                immature = (80..90).random() / 100f,
-                mature = (3..10).random() / 100f
-            )
-            "mature", "mature cataract" -> ConfidenceScores(
-                normal = (2..8).random() / 100f,
-                immature = (5..15).random() / 100f,
-                mature = (82..93).random() / 100f
-            )
-            else -> {
-                // Default balanced scores for unknown predictions
-                ConfidenceScores(
-                    normal = 0.33f,
-                    immature = 0.33f,
-                    mature = 0.34f
-                )
-            }
+            "normal" -> ConfidenceScores(normal = 0.95f, immature = 0.03f, mature = 0.02f)
+            "immature", "immature cataract" -> ConfidenceScores(normal = 0.05f, immature = 0.90f, mature = 0.05f)
+            "mature", "mature cataract" -> ConfidenceScores(normal = 0.03f, immature = 0.07f, mature = 0.90f)
+            else -> ConfidenceScores(normal = 0.33f, immature = 0.33f, mature = 0.34f)
+        }.also { scores ->
+            Log.w(TAG, "Generated fallback scores: Normal=${scores.normal}, Immature=${scores.immature}, Mature=${scores.mature}")
         }
     }
 
@@ -241,7 +286,7 @@ class HistoryFragment : Fragment() {
         super.onResume()
         // Refresh history when fragment becomes visible again
         if (::historyAdapter.isInitialized && historyAdapter.itemCount > 0) {
-            android.util.Log.d(TAG, "Fragment resumed, refreshing history")
+            Log.d(TAG, "Fragment resumed, refreshing history")
             loadHistory()
         }
     }
@@ -251,4 +296,3 @@ class HistoryFragment : Fragment() {
         _binding = null
     }
 }
-

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 object ApiClient {
     // Update dengan devtunnel URL Anda yang aktual
-    private const val BASE_URL = "https://hctqpvn8-3000.asse.devtunnels.ms/"
+    private const val BASE_URL = "http://47.129.31.225:3000/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

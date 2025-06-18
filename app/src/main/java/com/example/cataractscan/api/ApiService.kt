@@ -76,9 +76,9 @@ interface ApiService {
         @Part("email") email: okhttp3.RequestBody?
     ): Response<ProfileUpdateResponse>
 
-    // Image Analysis
+    // Image Analysis - UPDATED: Removed "user/" prefix
     @Multipart
-    @POST("user/dashboard/predict")
+    @POST("/admin/dashboard/predict")
     suspend fun analyzeImage(
         @Header("Authorization") authorization: String,
         @Part image: MultipartBody.Part
@@ -95,8 +95,8 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<ProfileEditResponse>
 
-    // History endpoint
-    @GET("user/dashboard/history")
+    // History endpoint - UPDATED: Removed "user/" prefix
+    @GET("/admin/dashboard/history")
     suspend fun getHistory(
         @Header("Authorization") authorization: String
     ): Response<HistoryResponse>

@@ -23,6 +23,7 @@
         android:roundIcon="@drawable/splash_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.CataractScan"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".login.ChangePasswordActivity"

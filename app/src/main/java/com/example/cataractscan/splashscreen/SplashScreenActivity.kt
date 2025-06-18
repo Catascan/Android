@@ -1,5 +1,4 @@
 package com.example.cataractscan.splashscreen
-
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -56,3 +55,4 @@ class SplashScreenActivity : AppCompatActivity() {
         finish()
     }
 }
+

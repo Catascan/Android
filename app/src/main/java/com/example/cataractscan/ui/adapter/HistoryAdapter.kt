@@ -22,6 +22,8 @@ class HistoryAdapter(
 
     companion object {
         private const val TAG = "HistoryAdapter"
+        // BASE URL sesuai dengan backend Anda
+        private const val BASE_URL = "https://hctqpvn8-3000.asse.devtunnels.ms"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
@@ -42,6 +44,11 @@ class HistoryAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: HistoryItem) {
+            Log.d(TAG, "=== BINDING HISTORY ITEM ===")
+            Log.d(TAG, "Item ID: ${item.id}")
+            Log.d(TAG, "Prediction: ${item.prediction}")
+            Log.d(TAG, "Original photoUrl: '${item.photoUrl}'")
+
             // Load image with proper URL handling
             loadImage(item.photoUrl)
 
@@ -83,7 +90,8 @@ class HistoryAdapter(
         }
 
         private fun loadImage(photoUrl: String?) {
-            Log.d(TAG, "Loading image from URL: $photoUrl")
+            Log.d(TAG, "=== IMAGE LOADING DEBUG ===")
+            Log.d(TAG, "Raw photoUrl from API: '$photoUrl'")
 
             if (photoUrl.isNullOrEmpty()) {
                 Log.w(TAG, "Photo URL is null or empty")
@@ -91,123 +99,139 @@ class HistoryAdapter(
                 return
             }
 
-            // Fix the malformed URL - remove the duplicate domain part
-            val cleanUrl = cleanPhotoUrl(photoUrl)
-            Log.d(TAG, "Cleaned URL: $cleanUrl")
+            // Clean the URL based on what backend sends
+            val finalUrl = buildImageUrl(photoUrl)
+            Log.d(TAG, "Final image URL: '$finalUrl'")
 
             val requestOptions = RequestOptions()
-                .placeholder(android.R.drawable.ic_menu_gallery) // Use system drawable
-                .error(android.R.drawable.ic_menu_gallery) // Use system drawable
+                .placeholder(R.drawable.ic_place_holder)
+                .error(R.drawable.ic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .timeout(15000) // 15 second timeout
+                .timeout(15000)
 
-            Glide.with(binding.root.context)
-                .load(cleanUrl)
-                .apply(requestOptions)
-                .listener(object : com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable> {
-                    override fun onLoadFailed(
-                        e: com.bumptech.glide.load.engine.GlideException?,
-                        model: Any?,
-                        target: com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Log.e(TAG, "Failed to load image: $cleanUrl", e)
-                        e?.logRootCauses(TAG)
-                        return false
-                    }
+            try {
+                Glide.with(binding.root.context)
+                    .load(finalUrl)
+                    .apply(requestOptions)
+                    .into(binding.ivHistoryImage)
 
-                    override fun onResourceReady(
-                        resource: android.graphics.drawable.Drawable?,
-                        model: Any?,
-                        target: com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable>?,
-                        dataSource: com.bumptech.glide.load.DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Log.d(TAG, "Image loaded successfully: $cleanUrl")
-                        return false
-                    }
-                })
-                .into(binding.ivHistoryImage)
+                Log.d(TAG, "Glide load initiated for: $finalUrl")
+            } catch (e: Exception) {
+                Log.e(TAG, "Exception loading image with Glide: ${e.message}", e)
+                binding.ivHistoryImage.setImageResource(R.drawable.ic_place_holder)
+            }
         }
 
-        private fun cleanPhotoUrl(photoUrl: String): String {
-            // Handle malformed URLs like:
-            // "http://catascan-api-544673494956.asia-southeast1.run.app/https://storage.googleapis.com/..."
-            return when {
-                photoUrl.contains("run.app/https://") -> {
-                    // Extract the actual Google Storage URL
-                    val httpsIndex = photoUrl.indexOf("https://", photoUrl.indexOf("run.app/"))
-                    if (httpsIndex != -1) {
-                        photoUrl.substring(httpsIndex)
-                    } else {
-                        photoUrl
-                    }
-                }
-                photoUrl.contains("run.app/http://") -> {
-                    // Extract the actual URL (though http should be https for Google Storage)
-                    val httpIndex = photoUrl.indexOf("http://", photoUrl.indexOf("run.app/"))
-                    if (httpIndex != -1) {
-                        val extractedUrl = photoUrl.substring(httpIndex)
-                        // Convert http to https for Google Cloud Storage
-                        if (extractedUrl.contains("googleapis.com") || extractedUrl.contains("googleusercontent.com")) {
-                            extractedUrl.replace("http://", "https://")
-                        } else {
-                            extractedUrl
-                        }
-                    } else {
-                        photoUrl
-                    }
-                }
-                photoUrl.startsWith("//") -> {
-                    "https:$photoUrl"
-                }
-                photoUrl.startsWith("/") -> {
-                    "https://storage.googleapis.com$photoUrl"
-                }
-                else -> photoUrl
+        private fun buildImageUrl(photoUrl: String): String {
+            Log.d(TAG, "Building image URL from: $photoUrl")
+
+            // Jika URL sudah lengkap (absolute URL), gunakan langsung
+            if (photoUrl.startsWith("http://") || photoUrl.startsWith("https://")) {
+                Log.d(TAG, "URL is already absolute: $photoUrl")
+                return photoUrl
             }
+
+            // Jika URL relatif, tambahkan base URL
+            val cleanedUrl = when {
+                // Jika dimulai dengan "/", langsung tambahkan ke base URL
+                photoUrl.startsWith("/") -> {
+                    "$BASE_URL$photoUrl"
+                }
+
+                // Jika dimulai dengan "uploads/" atau folder lain, tambahkan "/"
+                photoUrl.startsWith("uploads/") ||
+                        photoUrl.startsWith("images/") ||
+                        photoUrl.startsWith("static/") ||
+                        photoUrl.startsWith("media/") -> {
+                    "$BASE_URL/$photoUrl"
+                }
+
+                // Jika hanya nama file, asumsikan ada di folder uploads
+                !photoUrl.contains("/") &&
+                        (photoUrl.contains(".jpg") || photoUrl.contains(".png") ||
+                                photoUrl.contains(".jpeg") || photoUrl.contains(".webp") ||
+                                photoUrl.contains(".gif") || photoUrl.contains(".bmp")) -> {
+                    "$BASE_URL/uploads/$photoUrl"
+                }
+
+                // Default: langsung tambahkan ke base URL dengan "/"
+                else -> {
+                    "$BASE_URL/$photoUrl"
+                }
+            }
+
+            Log.d(TAG, "Built URL: $cleanedUrl")
+            return cleanedUrl
         }
 
         private fun formatDateTime(createdAt: String) {
             try {
-                // Try multiple date formats
+                // Multiple date formats untuk compatibility
                 val formats = listOf(
                     "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
                     "yyyy-MM-dd'T'HH:mm:ss'Z'",
-                    "yyyy-MM-dd HH:mm:ss",
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'",
+                    "yyyy-MM-dd'T'HH:mm:ss",
+                    "yyyy-MM-dd'T'HH:mm:ss.SSS",
                     "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
-                    "yyyy-MM-dd'T'HH:mm:ss"
+                    "yyyy-MM-dd HH:mm:ss"
                 )
 
-                var date: Date? = null
+                var parsedDate: Date? = null
                 for (format in formats) {
                     try {
                         val inputFormat = SimpleDateFormat(format, Locale.getDefault())
                         inputFormat.timeZone = TimeZone.getTimeZone("UTC")
-                        date = inputFormat.parse(createdAt)
-                        if (date != null) break
+                        parsedDate = inputFormat.parse(createdAt)
+                        if (parsedDate != null) {
+                            Log.d(TAG, "Successfully parsed date with format: $format")
+                            break
+                        }
                     } catch (e: Exception) {
                         // Try next format
                         continue
                     }
                 }
 
-                if (date != null) {
+                if (parsedDate != null) {
+                    // Format untuk display
                     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-                    binding.tvDate.text = dateFormat.format(date)
-                    binding.tvTime.text = timeFormat.format(date)
+                    binding.tvDate.text = dateFormat.format(parsedDate)
+                    binding.tvTime.text = timeFormat.format(parsedDate)
+
+                    Log.d(TAG, "Formatted date: ${binding.tvDate.text}, time: ${binding.tvTime.text}")
                 } else {
-                    // Fallback parsing
-                    binding.tvDate.text = createdAt.substringBefore('T').replace("-", "/")
-                    binding.tvTime.text = createdAt.substringAfter('T').substringBefore('.').substring(0, 5)
+                    // Fallback parsing untuk format yang tidak standard
+                    Log.w(TAG, "Could not parse date with standard formats, using fallback")
+
+                    val datePart = createdAt.substringBefore('T')
+                    val timePart = createdAt.substringAfter('T').substringBefore('.')
+
+                    binding.tvDate.text = datePart.replace("-", "/")
+                    binding.tvTime.text = if (timePart.length >= 5) {
+                        timePart.substring(0, 5)
+                    } else {
+                        timePart
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error formatting date: $createdAt", e)
-                // Final fallback
-                binding.tvDate.text = createdAt.substringBefore('T')
-                binding.tvTime.text = createdAt.substringAfter('T').substringBefore('.')
+
+                // Final fallback - just show the raw strings
+                try {
+                    binding.tvDate.text = createdAt.substringBefore('T')
+                    val timePart = createdAt.substringAfter('T').substringBefore('.')
+                    binding.tvTime.text = if (timePart.length >= 5) {
+                        timePart.substring(0, 5)
+                    } else {
+                        timePart
+                    }
+                } catch (ex: Exception) {
+                    binding.tvDate.text = "Unknown date"
+                    binding.tvTime.text = "Unknown time"
+                }
             }
         }
     }
